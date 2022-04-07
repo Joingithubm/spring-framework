@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:property-placeholder location="classpath:application.properties"/>
+
+    <!-- more bean definitions go here -->
+    <bean id="master3306" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="url" value="jdbc:mysql://1.117.48.220:3306/course_db"/>
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="username" value="root"/>
+        <property name="password" value="${password}"/>
+        <property name="filters" value="config"/>
+        <property name="connectionProperties" value="config.decrypt=true;config.decrypt.key=${publickey}"/>
+    </bean>
+
+    <!-- more bean definitions go here -->
+    <bean id="slave3307" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="url" value="jdbc:mysql://1.117.48.220:3307/course_db"/>
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="username" value="root"/>
+        <property name="password" value="${password}"/>
+        <property name="filters" value="config"/>
+        <property name="connectionProperties" value="config.decrypt=true;config.decrypt.key=${publickey}"/>
+    </bean>
+
+    <bean id="dynamicDataSource" class="com.athome.config.DynamicDataSource">
+        <property name="defaultTargetDataSource" ref="master3306"/>
+        <property name="targetDataSources">
+            <map>
+                <entry key="3306" value="master3306"/>
+                <entry key="3307" value="slave3307"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dynamicDataSource"/>
+    </bean>
+
+    <bean id="mapperScannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="sqlSessionFactoryBeanName" value="sessionFactory"/>
+        <property name="basePackage" value="com.athome.mapper"/>
+    </bean>
+
+
+
+</beans>

@@ -1,0 +1,13 @@
+-- name spark
+-- type Spark SQL
+-- author admin@dtstack.com
+-- create time 2022-02-25 15:28:48
+-- desc
+
+SHOW TABLES ;
+
+create table test1(
+    id int ,
+    name varchar(23),
+    age int
+);
