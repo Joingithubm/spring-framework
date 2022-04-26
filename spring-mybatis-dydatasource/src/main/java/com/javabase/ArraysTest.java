@@ -34,9 +34,6 @@ public class ArraysTest {
 
     public static void sort(){
         int[] str = new int[]{1,2,3,4,5};
-        Arrays.sort(str, new Comparator<>(){
-            (o1,o2) ->
-        });
         System.out.println(Arrays.toString(str));
     }
 }
